@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VertragsFuchs | Verträge sicher prüfen</title>
+    <!-- Tailwind CSS für schnelles Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome für Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Animation für den Ladebalken */
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 95%; } /* Bleibt bei 95% stehen bis Antwort kommt */
+        }
+        
+        .animate-progress {
+            animation: progress 15s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Markdown Styling für den AI Output */
+        .prose h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: #1e293b; }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        .prose li { margin-bottom: 0.25rem; }
+        .prose p { margin-bottom: 1rem; line-height: 1.6; }
+        .prose strong { color: #c2410c; font-weight: 700; } /* Orange-700 Hervorhebung für Warnungen */
+        
+        /* Tab Active State Utility */
+        .tab-active {
+            background: linear-gradient(to right, #f97316, #ef4444);
+            color: white;
+            border-color: transparent;
+        }
+        .tab-inactive {
+            background: white;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+        .tab-inactive:hover {
+            border-color: #f97316;
+            color: #ea580c;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- HEADER -->
+    <header class="bg-white shadow-sm fixed w-full z-50 top-0">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <i class="fa-solid fa-shield-cat text-orange-500 text-2xl mr-2"></i>
+                    <span class="font-bold text-xl tracking-tight text-slate-900">
+                        Vertrags<span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500">Fuchs</span>
+                    </span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#hero" class="text-slate-500 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition">Start</a>
+                    <a href="#how-it-works" class="text-slate-500 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition">So funktioniert's</a>
+                    <a href="#tool" class="text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 px-4 py-2 rounded-md text-sm font-medium transition shadow-md">Jetzt prüfen</a>
+                </nav>
+                <!-- Mobile Menu Button (Simplified) -->
+                <div class="md:hidden">
+                    <a href="#tool" class="text-orange-600 font-bold text-sm">Prüfen</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="pt-32 pb-20 bg-gradient-to-b from-orange-50 to-slate-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6 leading-tight">
+                Versteckte Fallen in <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500">Verträgen finden.</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-600 mb-10">
+                Lade deinen Vertrag hoch oder kopiere den Text der AGBs. Der VertragsFuchs scannt das Dokument in Sekunden nach Risiken und "Red Flags".
+            </p>
+            <div class="flex justify-center gap-4">
+                <a href="#tool" class="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 transition-all transform hover:scale-105">
+                    <i class="fa-solid fa-magnifying-glass mr-2"></i> Jetzt starten
+                </a>
+                <a href="#how-it-works" class="inline-flex items-center px-8 py-3 border border-slate-300 text-base font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition">
+                    Mehr erfahren
+                </a>
+            </div>
+            <div class="mt-10 flex justify-center space-x-6 text-slate-400 text-sm">
+                <span class="flex items-center"><i class="fa-solid fa-check text-orange-500 mr-2"></i> 100% AI Analyse</span>
+                <span class="flex items-center"><i class="fa-solid fa-check text-orange-500 mr-2"></i> PDF oder Text</span>
+                <span class="flex items-center"><i class="fa-solid fa-check text-orange-500 mr-2"></i> Sofortiges Ergebnis</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section id="how-it-works" class="py-20 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900">So einfach geht's</h2>
+                <p class="mt-4 text-slate-600">In drei Schritten zur Sicherheit.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <!-- Step 1 -->
+                <div class="bg-slate-50 p-8 rounded-xl border border-slate-100 text-center hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                        <i class="fa-solid fa-file-import"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">1. Input wählen</h3>
+                    <p class="text-slate-600">Lade eine PDF hoch oder kopiere den Text (z.B. AGBs) direkt in das Tool.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="bg-slate-50 p-8 rounded-xl border border-slate-100 text-center hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">2. AI Analyse</h3>
+                    <p class="text-slate-600">Unsere intelligente Engine scannt den Inhalt nach kritischen Formulierungen.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="bg-slate-50 p-8 rounded-xl border border-slate-100 text-center hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">3. Bericht erhalten</h3>
+                    <p class="text-slate-600">Du erhältst sofort eine Zusammenfassung aller "Red Flags" und Risiken.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TOOL SECTION -->
+    <section id="tool" class="py-20 bg-orange-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-orange-100">
+                <div class="p-8 md:p-12">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-slate-900">Dokument prüfen</h2>
+                        <p class="text-slate-500 text-sm mt-2">Wähle deine Eingabemethode.</p>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex justify-center mb-8 space-x-4">
+                        <button type="button" id="tabPdf" class="px-6 py-2 rounded-full text-sm font-semibold border shadow-sm transition-all tab-active">
+                            <i class="fa-solid fa-file-pdf mr-2"></i> PDF Upload
+                        </button>
+                        <button type="button" id="tabText" class="px-6 py-2 rounded-full text-sm font-semibold border shadow-sm transition-all tab-inactive">
+                            <i class="fa-solid fa-align-left mr-2"></i> Text Eingabe
+                        </button>
+                    </div>
+
+                    <!-- Upload Form -->
+                    <form id="uploadForm" class="space-y-6">
+                        
+                        <!-- PDF Drop Zone -->
+                        <div id="pdfSection">
+                            <div class="flex justify-center px-6 pt-10 pb-10 border-2 border-slate-300 border-dashed rounded-lg hover:bg-orange-50 hover:border-orange-300 transition cursor-pointer relative" id="dropZone">
+                                <div class="space-y-1 text-center">
+                                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-slate-400 mb-3"></i>
+                                    <div class="flex text-sm text-slate-600 justify-center">
+                                        <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-orange-600 hover:text-orange-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-orange-500">
+                                            <span>Datei auswählen</span>
+                                            <input id="file-upload" name="file-upload" type="file" accept=".pdf" class="sr-only">
+                                        </label>
+                                        <p class="pl-1">oder hierhin ziehen</p>
+                                    </div>
+                                    <p class="text-xs text-slate-500">PDF bis zu 5MB</p>
+                                    <p id="fileName" class="text-sm font-semibold text-slate-800 mt-2 hidden"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Text Area Section (Hidden by default) -->
+                        <div id="textSection" class="hidden">
+                            <label for="text-input" class="sr-only">Vertragstext</label>
+                            <div class="relative">
+                                <textarea id="text-input" rows="12" class="block w-full rounded-lg border-slate-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-4 border" placeholder="Kopiere hier den Text deines Vertrags oder die AGBs hinein..."></textarea>
+                                <div class="absolute bottom-2 right-2 text-xs text-slate-400 pointer-events-none">
+                                    Nur Text
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="errorMessage" class="hidden bg-red-50 text-red-700 p-4 rounded-lg text-sm text-center">
+                            <!-- JS Error Messages go here -->
+                        </div>
+
+                        <button type="submit" id="submitBtn" disabled class="w-full flex justify-center py-4 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-slate-400 cursor-not-allowed transition-all">
+                            Analysieren starten
+                        </button>
+                    </form>
+
+                    <!-- LOADING SECTION (Hidden by default) -->
+                    <div id="loadingSection" class="hidden mt-8 text-center">
+                        <p class="text-slate-700 font-medium mb-3">VertragsFuchs analysiert...</p>
+                        <div class="w-full bg-slate-200 rounded-full h-4 overflow-hidden">
+                            <div class="bg-gradient-to-r from-orange-500 to-red-500 h-4 rounded-full animate-progress" style="width: 0%"></div>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Das kann bis zu 30 Sekunden dauern.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- RESULT SECTION (Hidden by default) -->
+            <div id="resultSection" class="hidden mt-10 bg-white rounded-2xl shadow-xl border-l-8 border-orange-500 overflow-hidden animate-fade-in-up">
+                <div class="p-8 md:p-12">
+                    <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+                        <h3 class="text-2xl font-bold text-slate-900"><i class="fa-solid fa-magnifying-glass-chart text-orange-500 mr-2"></i> Analyse Ergebnis</h3>
+                        <button onclick="window.location.reload()" class="text-sm text-slate-500 hover:text-orange-600 underline">Neues Dokument</button>
+                    </div>
+                    
+                    <!-- Content Area -->
+                    <div id="resultContent" class="prose max-w-none text-slate-700">
+                        <!-- AI Content will be injected here -->
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+                        <p class="text-xs text-slate-400 italic">Hinweis: Dies ist eine automatisierte KI-Analyse und stellt keine Rechtsberatung dar.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-300 py-12 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <span class="font-bold text-xl text-white">Vertrags<span class="text-orange-500">Fuchs</span></span>
+                <p class="text-sm mt-2 text-slate-400">Powered by n8n & Cloudflare Pages</p>
+            </div>
+            <div class="flex space-x-6 text-sm">
+                <a href="#" class="hover:text-white transition">Impressum</a>
+                <a href="#" class="hover:text-white transition">Datenschutz</a>
+                <a href="#" class="hover:text-white transition">Kontakt</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Configuration - Updated URL
+        const WEBHOOK_URL = "https://n8n.srv1164949.hstgr.cloud/webhook/check-contract";
+        
+        // State
+        let currentMode = 'pdf'; // 'pdf' or 'text'
+
+        // DOM Elements
+        const form = document.getElementById('uploadForm');
+        const fileInput = document.getElementById('file-upload');
+        const textInput = document.getElementById('text-input');
+        const fileNameDisplay = document.getElementById('fileName');
+        const submitBtn = document.getElementById('submitBtn');
+        const dropZone = document.getElementById('dropZone');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        const tabPdf = document.getElementById('tabPdf');
+        const tabText = document.getElementById('tabText');
+        const pdfSection = document.getElementById('pdfSection');
+        const textSection = document.getElementById('textSection');
+
+        const loadingSection = document.getElementById('loadingSection');
+        const resultSection = document.getElementById('resultSection');
+        const resultContent = document.getElementById('resultContent');
+
+        // Tabs Logic
+        tabPdf.addEventListener('click', () => switchTab('pdf'));
+        tabText.addEventListener('click', () => switchTab('text'));
+
+        function switchTab(mode) {
+            currentMode = mode;
+            errorMessage.classList.add('hidden');
+            resetInputs(); // Clear previous inputs when switching
+
+            if (mode === 'pdf') {
+                // UI Toggle
+                tabPdf.classList.add('tab-active');
+                tabPdf.classList.remove('tab-inactive');
+                tabText.classList.add('tab-inactive');
+                tabText.classList.remove('tab-active');
+                
+                // Content Toggle
+                pdfSection.classList.remove('hidden');
+                textSection.classList.add('hidden');
+            } else {
+                // UI Toggle
+                tabText.classList.add('tab-active');
+                tabText.classList.remove('tab-inactive');
+                tabPdf.classList.add('tab-inactive');
+                tabPdf.classList.remove('tab-active');
+
+                // Content Toggle
+                textSection.classList.remove('hidden');
+                pdfSection.classList.add('hidden');
+            }
+        }
+
+        // Helper: Simple Markdown Parser
+        function parseMarkdown(text) {
+            if (!text) return "";
+            let html = text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/### (.*?)\n/g, '<h3>$1</h3>')
+                .replace(/^\- (.*?)$/gm, '<ul><li>$1</li></ul>')
+                .replace(/<\/ul>\s*<ul>/g, '')
+                .replace(/\n/g, '<br>');
+            return html;
+        }
+
+        // Input Listeners
+        fileInput.addEventListener('change', handleFileSelect);
+        textInput.addEventListener('input', handleTextContext);
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            errorMessage.classList.add('hidden');
+            
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showError("Die Datei ist zu groß! Bitte maximal 5MB hochladen.");
+                    resetFile();
+                    return;
+                }
+                if (file.type !== "application/pdf") {
+                    showError("Bitte nur PDF Dateien hochladen.");
+                    resetFile();
+                    return;
+                }
+                fileNameDisplay.textContent = `Ausgewählt: ${file.name}`;
+                fileNameDisplay.classList.remove('hidden');
+                enableButton(true);
+            } else {
+                enableButton(false);
+            }
+        }
+
+        function handleTextContext(e) {
+            const text = e.target.value;
+            if (text.trim().length > 10) { // Min 10 chars
+                enableButton(true);
+                errorMessage.classList.add('hidden');
+            } else {
+                enableButton(false);
+            }
+        }
+
+        function resetInputs() {
+            resetFile();
+            textInput.value = "";
+        }
+
+        function resetFile() {
+            fileInput.value = "";
+            fileNameDisplay.textContent = "";
+            fileNameDisplay.classList.add('hidden');
+            enableButton(false);
+        }
+
+        function enableButton(enable) {
+            if (enable) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-slate-400', 'cursor-not-allowed');
+                submitBtn.classList.add('bg-gradient-to-r', 'from-orange-500', 'to-red-500', 'hover:from-orange-600', 'hover:to-red-600', 'cursor-pointer');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('bg-slate-400', 'cursor-not-allowed');
+                submitBtn.classList.remove('bg-gradient-to-r', 'from-orange-500', 'to-red-500', 'hover:from-orange-600', 'hover:to-red-600', 'cursor-pointer');
+            }
+        }
+
+        function showError(msg) {
+            errorMessage.textContent = msg;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // Form Submission
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // 1. Prepare Data based on Mode
+            const formData = new FormData();
+            
+            if (currentMode === 'pdf') {
+                const file = fileInput.files[0];
+                if (!file) return;
+                formData.append('data', file); // Binary file
+            } else {
+                const text = textInput.value;
+                if (!text || text.trim().length < 10) return;
+                formData.append('text_content', text); // Pure text field
+            }
+
+            // 2. UI Update
+            form.classList.add('hidden');
+            loadingSection.classList.remove('hidden');
+            errorMessage.classList.add('hidden');
+
+            try {
+                // 3. Send Request
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                // 4. Handle Response
+                loadingSection.classList.add('hidden');
+
+                if (response.ok) {
+                    const aiText = data.content || data.output || data.text || JSON.stringify(data);
+                    resultContent.innerHTML = parseMarkdown(aiText);
+                    resultSection.classList.remove('hidden');
+                    resultSection.scrollIntoView({ behavior: 'smooth' });
+                } else if (response.status === 429) {
+                    showError(data.message || "Tageslimit erreicht.");
+                    form.classList.remove('hidden');
+                } else {
+                    throw new Error("Ein unbekannter Fehler ist aufgetreten.");
+                }
+
+            } catch (error) {
+                loadingSection.classList.add('hidden');
+                form.classList.remove('hidden');
+                // Updated Error Handling for Debugging
+                console.error("Fetch Error Details:", error);
+                showError("Verbindung fehlgeschlagen. Prüfe, ob CORS in n8n aktiviert ist oder der Server läuft.");
+            }
+        });
+
+        // Drag and Drop (Keep existing logic for PDF mode)
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.classList.add('bg-orange-50', 'border-orange-400');
+        }
+
+        function unhighlight(e) {
+            dropZone.classList.remove('bg-orange-50', 'border-orange-400');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            if (currentMode !== 'pdf') return; // Only allow drop in PDF mode
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            const event = new Event('change');
+            fileInput.dispatchEvent(event);
+        }
+
+    </script>
+</body>
+</html>
