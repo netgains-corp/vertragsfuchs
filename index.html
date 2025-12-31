@@ -343,7 +343,8 @@
 
         function handleTextContext(e) {
             const text = e.target.value;
-            if (text.trim().length > 10) { // Min 10 chars
+            // Relaxed validation: Allow short texts for testing
+            if (text.trim().length >= 3) { 
                 enableButton(true);
                 errorMessage.classList.add('hidden');
             } else {
@@ -393,7 +394,7 @@
                 formData.append('data', file); // Binary file
             } else {
                 const text = textInput.value;
-                if (!text || text.trim().length < 10) return;
+                if (!text || text.trim().length < 3) return; // Matches input listener
                 formData.append('text_content', text); // Pure text field
             }
 
@@ -406,6 +407,9 @@
                 // 3. Send Request
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'
+                    },
                     body: formData
                 });
 
@@ -423,15 +427,23 @@
                     showError(data.message || "Tageslimit erreicht.");
                     form.classList.remove('hidden');
                 } else {
-                    throw new Error("Ein unbekannter Fehler ist aufgetreten.");
+                    throw new Error("Server antwortete mit Fehlercode: " + response.status);
                 }
 
             } catch (error) {
                 loadingSection.classList.add('hidden');
                 form.classList.remove('hidden');
-                // Updated Error Handling for Debugging
+                
                 console.error("Fetch Error Details:", error);
-                showError("Verbindung fehlgeschlagen. Prüfe, ob CORS in n8n aktiviert ist oder der Server läuft.");
+                
+                // User-friendly error mapping
+                let msg = "Verbindung fehlgeschlagen.";
+                if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+                    msg += " (Server nicht erreichbar). TIPP: Ist der Workflow in n8n oben rechts auf 'ACTIVE' (grün) geschaltet?";
+                } else {
+                    msg += " Details: " + error.message;
+                }
+                showError(msg);
             }
         });
 
