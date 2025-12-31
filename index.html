@@ -197,12 +197,20 @@
                     </form>
 
                     <!-- LOADING SECTION (Hidden by default) -->
-                    <div id="loadingSection" class="hidden mt-8 text-center">
-                        <p class="text-slate-700 font-medium mb-3">VertragsFuchs analysiert...</p>
-                        <div class="w-full bg-slate-200 rounded-full h-4 overflow-hidden">
-                            <div class="bg-gradient-to-r from-orange-500 to-red-500 h-4 rounded-full animate-progress" style="width: 0%"></div>
+                    <div id="loadingSection" class="hidden mt-8 text-center py-4">
+                        <!-- Loading Icon -->
+                        <div class="mb-6">
+                            <i class="fa-solid fa-circle-notch fa-spin text-5xl text-orange-500"></i>
                         </div>
-                        <p class="text-xs text-slate-400 mt-2">Das kann bis zu 30 Sekunden dauern.</p>
+                        
+                        <h3 class="text-xl font-semibold text-slate-800 mb-2">Der VertragsFuchs liest...</h3>
+                        <p class="text-slate-600 mb-6">Bitte warten, die KI analysiert dein Dokument auf Risiken.</p>
+                        
+                        <!-- Progress Bar -->
+                        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden max-w-md mx-auto">
+                            <div class="bg-gradient-to-r from-orange-500 to-red-500 h-3 rounded-full animate-progress" style="width: 0%"></div>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-3">Das kann bis zu 30 Sekunden dauern.</p>
                     </div>
 
                 </div>
@@ -246,7 +254,7 @@
     </footer>
 
     <script>
-        // Configuration - Updated URL
+        // Configuration
         const WEBHOOK_URL = "https://n8n.srv1164949.hstgr.cloud/webhook/d6e5c041-1650-4021-b89d-f02e457b07bc";
         
         // State
@@ -405,11 +413,9 @@
 
             try {
                 // 3. Send Request
+                // Optimized fetch request: Removed custom headers to avoid CORS preflight triggers
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
-                    headers: {
-                        'Accept': 'application/json'
-                    },
                     body: formData
                 });
 
@@ -439,7 +445,7 @@
                 // User-friendly error mapping
                 let msg = "Verbindung fehlgeschlagen.";
                 if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
-                    msg += " (Server nicht erreichbar). TIPP: Ist der Workflow in n8n oben rechts auf 'ACTIVE' (grün) geschaltet?";
+                    msg += " TIPP: Ist dein n8n Webhook Node auf 'POST' gestellt? (Standard ist GET). Blockiert dein Browser CORS?";
                 } else {
                     msg += " Details: " + error.message;
                 }
